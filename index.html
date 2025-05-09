@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>เครื่องคำนวณ BMI</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(to right, #00c6ff, #0072ff);
+      color: #fff;
+      text-align: center;
+      padding: 50px;
+    }
+    .container {
+      background: rgba(255,255,255,0.1);
+      padding: 30px;
+      border-radius: 20px;
+      width: 300px;
+      margin: auto;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    input {
+      padding: 10px;
+      width: 80%;
+      margin: 10px 0;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+    }
+    button {
+      background: #fff;
+      color: #0072ff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #f0f0f0;
+    }
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>คำนวณค่าดัชนีมวลกาย (BMI)</h2>
+    <input type="number" id="weight" placeholder="น้ำหนัก (กิโลกรัม)">
+    <input type="number" id="height" placeholder="ส่วนสูง (เซนติเมตร)">
+    <br>
+    <button onclick="calculateBMI()">คำนวณ</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    function calculateBMI() {
+      const weight = parseFloat(document.getElementById("weight").value);
+      const height = parseFloat(document.getElementById("height").value) / 100;
+
+      if (isNaN(weight) || isNaN(height) || height <= 0 || weight <= 0) {
+        document.getElementById("result").textContent = "กรุณากรอกข้อมูลให้ถูกต้อง";
+        return;
+      }
+
+      const bmi = weight / (height * height);
+      let status = "";
+
+      if (bmi < 18.5) status = "น้ำหนักน้อย";
+      else if (bmi < 23) status = "น้ำหนักปกติ";
+      else if (bmi < 25) status = "น้ำหนักเกิน";
+      else if (bmi < 30) status = "อ้วน";
+      else status = "อ้วนมาก";
+
+      document.getElementById("result").textContent =
+        `BMI ของคุณคือ ${bmi.toFixed(2)} (${status})`;
+    }
+  </script>
+</body>
+</html>
