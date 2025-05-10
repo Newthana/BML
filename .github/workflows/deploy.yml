@@ -4,30 +4,18 @@ on:
   push:
     branches:
       - main
-  pull_request:
 
 jobs:
-  build-and-deploy:
+  deploy-html:
     runs-on: ubuntu-latest
 
     steps:
-      # ดึงซอร์สโค้ดจาก repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # หากคุณมีไฟล์ build หรือ assets (ไม่ต้องมีในกรณี HTML เพียว ๆ)
-      # ถ้าไม่ใช้ build step ก็ข้ามไปเลย
-
-      # Login เข้า Azure ด้วย Service Principal
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # Deploy ไปยัง App Service: BMIweb
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
           app-name: BMIweb
-          slot-name: 'production'
-          package: ./  # ถ้าโค้ดของคุณอยู่ใน root directory
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
+          package: ./  # หรือเปลี่ยนเป็น ./website ถ้าไฟล์ HTML อยู่ในโฟลเดอร์ย่อย
