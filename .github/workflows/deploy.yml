@@ -7,7 +7,7 @@ on:
   pull_request:
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -15,11 +15,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # ตั้งค่า Docker Buildx (สำหรับ multi-platform builds)
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+      # ตั้งค่า Node.js (แก้เวอร์ชันตามที่ใช้จริง)
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-      # แคช dependencies (ตัวอย่างนี้ใช้ Node.js)
+      # แคช dependencies
       - name: Cache Node.js modules
         uses: actions/cache@v3
         with:
@@ -32,6 +34,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # สั่ง build หรือรันคำสั่งอื่น ๆ
+      # สั่ง build
       - name: Run build
         run: npm run build
+
+      # Login เข้า Azure ด้วย Service Principal
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy ไปยัง App Service: BMIweb
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: BMIweb
+          slot-name: 'production'
+          package: .
