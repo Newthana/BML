@@ -15,28 +15,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # ตั้งค่า Node.js (แก้เวอร์ชันตามที่ใช้จริง)
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      # แคช dependencies
-      - name: Cache Node.js modules
-        uses: actions/cache@v3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
-
-      # ติดตั้ง dependencies
-      - name: Install dependencies
-        run: npm install
-
-      # สั่ง build
-      - name: Run build
-        run: npm run build
+      # หากคุณมีไฟล์ build หรือ assets (ไม่ต้องมีในกรณี HTML เพียว ๆ)
+      # ถ้าไม่ใช้ build step ก็ข้ามไปเลย
 
       # Login เข้า Azure ด้วย Service Principal
       - name: Login to Azure
@@ -50,4 +30,4 @@ jobs:
         with:
           app-name: BMIweb
           slot-name: 'production'
-          package: .
+          package: ./  # ถ้าโค้ดของคุณอยู่ใน root directory
